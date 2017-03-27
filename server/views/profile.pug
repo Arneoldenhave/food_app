@@ -1,0 +1,21 @@
+html
+	head
+
+	body
+		h1 Hello #{user.name}, 
+		br 
+		h1 What are we gonna eat today?
+
+		h1.recentFood Today's list
+			if user.food
+				each food in user.food
+					p #{food.name} at: #{food.time}
+
+		form(action='/profile' method = 'POST')
+			input(type = 'text' name='name' Placeholder='Add food item')
+			br
+			input(type = 'text' name='time' Placeholder='Add time')
+			br
+			input(type = 'text' name='quantity' Placeholder='Add quantitiy')
+			br
+			button(type='submit' formmethod='Post') Plan!

@@ -1,0 +1,12 @@
+html
+	head
+	body
+		h1 Welcome!
+		p Please create an account
+		form(action='/signup' method='/post')
+			input(name='name' type='text' placeholder='Username')
+			input(name='email' tpye='text' placeholder='Email')
+			input(name='password' type='text' placeholder='Password')
+			button(type='submit' formmethod='POST') Create
+
+
