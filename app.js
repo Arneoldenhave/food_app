@@ -52,25 +52,30 @@ app.get('/signup', (req,res) => {
 })
 
 //POST REQUESTS
-app.post('/profile', (req,res) => {
-  if(req.body.name.length === 0) {
-    res.redirect('/?message=' + encodeURIComponent("Plese fill type in your food item"));
-    return;
-  }
-  if(req.body.time.length === 0) {
-    res.redirect('/?message=' + encodeURIComponent("Plese fill in a time"));
-    return;
-  }
-  else {
-    db.Food.create ({
-      name: req.body.name,
-      time: req.body.time,
-      quantity : req.body.quantity,
-      userId : req.session.user.id
-    })
-  }
-  res.redirect('/profile')
-})
+app.post('/profile', bodyParser.urlencoded({extended:true}), function (req, res) {
+    const user = req.session.user
+    const stuffToMatch = req.body.time.match(/[0-9]{2}:[0-9]{2}/g) && //e.g. 12:00
+      req.body.quantity.match(/[0-9]{3}[ ]*gr/g ||                    //e.g. 500 gr
+      /[0-9]*.[0-9]/g || /[0-9]*/g) ||                                //e.g. 10.2 of 10
+      req.body.healthy.match(/[1-5]/ || null);                        //i.e. 1, 2, 3, 4 of 5 of niks
+    if(stuffToMatch){
+      console.log('this is the right format') 
+                
+      let newFood = db.Food.create({
+          name : req.body.name,
+          time : req.body.time,
+          quantity: req.body.quantity,
+          healthy: req.body.healthy,
+      })
+      
+    }
+    else{
+      console.log('Please log time like so: 15:00 AND quantity like so: 500 gr OR UNITS like so: 1.5 OR: 2')
+    }
+
+    //render the profile after if-else
+    res.render('profile', {user: user} {food : food})
+})//post
 
 
 // Signup Input

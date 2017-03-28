@@ -15,9 +15,11 @@ html
 		form(action='/profile' method = 'POST')
 			input(type = 'text' name='name' Placeholder='Add food item')
 			br
-			input(type = 'text' name='time' Placeholder='Add time')
+			input(type = 'text' name='time' Placeholder='Add time 00:00')
 			br
-			input(type = 'text' name='quantity' Placeholder='Add quantitiy')
+			input(type = 'text' name='quantity' Placeholder='Quantitiy? In gr or unit')
+			br
+			input(type = 'text' name='healthy' Placeholder='Healty? 1-5')
 			br
 			button(type='submit' formmethod='Post') Plan!
 
