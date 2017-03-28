@@ -11,6 +11,7 @@ html
 				each food in user.food
 					p #{food.name} at: #{food.time}
 
+
 		form(action='/profile' method = 'POST')
 			input(type = 'text' name='name' Placeholder='Add food item')
 			br
@@ -19,3 +20,5 @@ html
 			input(type = 'text' name='quantity' Placeholder='Add quantitiy')
 			br
 			button(type='submit' formmethod='Post') Plan!
+
+script(src= "../static/js/timer.js")

@@ -15,9 +15,8 @@ db.Food = db.define('food', {
 	name: Sequelize.STRING,
 	time: Sequelize.STRING,
 	healthy: Sequelize.STRING,
-	grams : Sequelize.INTEGER,
-	unit : Sequelize.INTEGER,
-	size: Sequelize.STRING,
+    quantity: Sequelize.STRING,
+
 	
 });
 

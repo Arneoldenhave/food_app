@@ -43,6 +43,25 @@ app.get('/profile', (req, res) => {
 
 //POST REQUESTS
 
+
+
+app.post('/profile', bodyParser.urlencoded({extedned:true}), function (req, res) {
+    
+    if(req.body.time.match(/[0-9]{2}:[0-9]{2}/g) && req.body.quantity.match(/[0-9]{3}[ ]*gr/g || /[0-9]*.[0-9]/g || /[0-9]*/g) ){
+        console.log('this is the right format') 
+                
+                let newFood = db.Food.create({
+                    name : req.body.name,
+                    time : req.body.time,
+                    quantity: req.body.quantity,
+                    healthy: req.body.healthy,
+                })
+        
+        }else{
+          alert('Please log time like so: 15:00 AND quantity like so: 500 gr OR UNITS like so: 1.5 OR: 2')
+    }//id
+})//post
+
 // Signup Input
 app.post('/signup', (request, response) => {
     bcrypt.hash(request.body.password, 8, function(err, hash) {
