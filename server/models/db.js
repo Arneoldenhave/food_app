@@ -14,7 +14,7 @@ db.User = db.define('user', {
 db.Food = db.define('food', {
 	name: Sequelize.STRING,
 	time: Sequelize.STRING,
-	healthy: Sequelize.STRING,
+	healthy: Sequelize.INTEGER,
     quantity: Sequelize.STRING,
 
 	

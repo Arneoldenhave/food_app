@@ -93,7 +93,8 @@ app.post('/login', (request, response) => {
 	}
 	db.User.findOne({
 		where: {
-			name: request.body.name,  
+			name: reques
+            t.body.name,  
 		}
 	}).then(function (user) {
 		if (user) {
