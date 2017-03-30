@@ -7,7 +7,8 @@ const db = new Sequelize(`postgres://${process.env.POSTGRES_USER}:${process.env.
 db.User = db.define('user', {
     name: Sequelize.STRING,
     email: Sequelize.STRING,
-    password: Sequelize.STRING
+    password: Sequelize.STRING,
+    arrayOfTimes: Sequelize.INTEGER
 });
 
  

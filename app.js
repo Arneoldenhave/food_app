@@ -55,9 +55,9 @@ app.get('/signup', (req,res) => {
 app.post('/profile', bodyParser.urlencoded({extended:true}), function (req, res) {
     const user = req.session.user
     const stuffToMatch = req.body.time.match(/[0-9]{2}:[0-9]{2}/g) && //e.g. 12:00
-      req.body.quantity.match(/[0-9]{3}[ ]*gr/g ||                    //e.g. 500 gr
-      /[0-9]*.[0-9]/g || /[0-9]*/g) ||                                //e.g. 10.2 of 10
-      req.body.healthy.match(/[1-5]/g);                        //i.e. 1, 2, 3, 4 of 5 of niks
+          req.body.quantity.match(/[0-9]{3}[ ]*gr/g ||                //e.g. 500 gr
+           /[0-9]*.[0-9]/g || /[0-9]*/g) ||                                //e.g. 10.2 of 10
+          req.body.healthy.match(/[1-5]/g);                        //i.e. 1, 2, 3, 4 of 5 of niks
     if(stuffToMatch){
       console.log('this is the right format') 
                 
@@ -67,16 +67,41 @@ app.post('/profile', bodyParser.urlencoded({extended:true}), function (req, res)
           quantity: req.body.quantity,
           healthy: req.body.healthy,
           userId : user.id
-      }).then( food => {
-        console.log (food)
-        res.redirect('/profile', {user: user}, {food : food})
-        // res.render('profile', {user: user, food : food})
       })
-      
+      .then(food => {
+        req.session.user.arrayOfTimes
+        const formattedDate = (new Date().getHours + ":" + new Date().getMinutes()).toString()
+        console.log(formattedDate)
+        const newTimer = {
+          foodName: req.body.name, 
+          time: req.body.time,
+        }
+
+        req.session.user.arrayOfTimes.push(newTimer)
+
+          setInterval(function(){
+            console.log( 'stuff from setInterval' )
+            console.log(newTimer)
+            console.log( 'req.session.user.arrayOfTimes.length' )
+            console.log(req.session.user.arrayOfTimes.length)
+            console.log(newTimer.time)
+            console.log(newTimer.foodName)
+            console.log(formattedDate)
+            for(i = 0 ; i < req.session.user.arrayOfTimes.length; i++){
+              if(formattedDate === req.session.user.arrayOfTimes[i].time) {
+                 console.log('Its: ' + req.session.user.arrayOfTimes[i].time +' time for your ' + req.session.user.arrayOfTimes[i].foodName)
+              }//for
+            }
+        }, 60000)
+
+      //    //array ding
+        // res.render('profile', {user: user, food : food})
+      res.redirect('/profile') 
+      })
     }
     else{
       console.log('Please log time like so: 15:00 AND quantity like so: 500 gr OR UNITS like so: 1.5 OR: 2')
-    }
+    }//else
 })//post
 
 
@@ -95,8 +120,12 @@ app.post('/signup', (req, res) => {
         email: req.body.email,
       })
         .then((user)=> {
-          req.session.user = user;
-          res.redirect('/profile')
+        req.session.user = user;
+        req.session.user.arrayOfTimes = [];
+        console.log('logging req.sessios.user.arrayOfTimes')
+        console.log(req.session.user.arrayOfTimes)
+  
+        res.redirect('/profile')
       })
     }//else
   })//bcrypt
@@ -122,7 +151,11 @@ app.post('/login', (req,res)=> {
   }).then(function(user) {
     bcrypt.compare(req.body.password, user.password, function(err, hash) {
       if(true) {
-        req.session.user = user;
+        // req.session.user = user;
+        // req.session.user.arrayOfTimes= []
+        // console.log('logging req.sessios.user.arrayOfTimes')
+        // console.log(req.sessios.user.arrayOfTimes)
+  
         res.redirect('/profile')
      }else{
         res.redirect('/?message=' + encodedURIComponent("Invalid user name and/or password."))
@@ -139,70 +172,3 @@ app.listen(3000,() => {
     console.log('Server hast started on port 3000')
 });
 
-// app.post('/login', (req, res) => {
-//     console.log(req.body)
-//     if(req.body.name.length === 0) {
-//         response.render('login', {
-//         message1: "Please fill out your username."
-//     });
-//         return;
-
-//     } else if
-//     (req.body.password.length === 0) {
-//         res.render('login', {
-//         message2: "Please fill out your password."
-//     });
-//         return;
-//     }
-//     db.User.findOne({
-//         where: {
-//             name: req.body.name 
-//         }
-//     }).then(function (user) {
-//         console.log(user)
-//         if (user) {
-//              bcrypt.compare(req.body.password, user.password, (err, result) => {
-//                  if(result === true){
-//                     req.session.user = user;
-//                     res.redirect('/profile');
-//                   }
-//              });
-//         } else {
-//           res.redirect('/login?message=' + encodeURIComponent("Invalid email or password."));
-//         }
-//     }, function (error) {
-//         res.redirect('/login?message=' + encodeURIComponent("Invalid email or password."));
-//     });
-// });
-
-// app.post('/login', (req,res)=> {
-//   if(req.body.name.length === 0) {
-//     res.redirect('/?message=' + encodeURIComponent("Plese fill type in your user name"));
-//     return;
-//   }
-//   if(req.body.password.length === 0) {
-//     res.redirect('/?message=' + encodeURIComponent("Please fill out your password"));
-//     return;
-//   }
-//   else {  
-//     db.User.findOne({
-//       where: {
-//        name: req.body.name
-//       }
-//     })//findone
-//   }//else
-//   .then(log => {
-//       console.log(User.name)
-//     }).then(function(user) {
-//       bcrypt.compare(req.body.password, user.password, function(err, hash) {
-//     if(true) {
-//      req.session.user = user;
-//       res.redirect('/profile')
-//     } else {
-//       res.redirect('/?message=' + encodedURIComponent("Invalid user name and/or password."))
-//     }  
-//     },(err) => {
-//       res.redirect('/?message=' + encodedURIComponent(err))
-//       })//(err)
-//     })//then
-// });//app.post
