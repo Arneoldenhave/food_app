@@ -23,4 +23,27 @@ html
 			br
 			button(type='submit' formmethod='Post') Plan!
 
-script(src= "../static/js/timer.js")
+		#foodMessage
+
+		script.
+			//via app.js heb je req.session.user.arrayOfTimes meegekregen als arrayOfTimes
+			setInterval(function(){
+	      
+				var formattedDate = new Date().getHours() + ":" + new Date().getMinutes()
+				var arrayOfTimes = JSON.parse('!{plannedFoodTimes}') //!{var_name} makes sure pug understands it is a server-side variable. JSON.parse transforms it into a proper client-side variable. Click on inspect in Chrome to see what actually happens.
+
+				console.log( 'arrayOfTimes.length' )
+				console.log(arrayOfTimes.length)
+				console.log('arrayOfTimes')
+				console.log(arrayOfTimes)
+				console.log('formattedDate')	
+				console.log(formattedDate)
+
+
+				for(i = 0 ; i < arrayOfTimes.length; i++){
+					if(formattedDate === arrayOfTimes[i].time) {
+						console.log('Its: ' + arrayOfTimes[i].time +' time for your ' + arrayOfTimes[i].foodName)
+						document.getElementById('foodMessage').innerHTML = '<p>It is time to eat your ' + arrayOfTimes[i].foodName + '</p>'
+					}//for
+				}
+			}, 1000)

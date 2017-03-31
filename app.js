@@ -40,7 +40,8 @@ app.get('/profile', (req, res) => {
     db.User.findOne({where: {name : req.session.user.name}, include: [{model: db.Food}]})
 	   .then(user => {
         console.log(user)
-        res.render('profile', {user: user})
+        //arrayOfTimes needs to be stringified, otherwise you get [Object Object]
+        res.render('profile', {user: user, plannedFoodTimes: JSON.stringify(req.session.user.arrayOfTimes)})
       })//then
   }//if
   else{res.redirect('/login')
@@ -69,34 +70,13 @@ app.post('/profile', bodyParser.urlencoded({extended:true}), function (req, res)
           userId : user.id
       })
       .then(food => {
-        req.session.user.arrayOfTimes
-        const formattedDate = (new Date().getHours + ":" + new Date().getMinutes()).toString()
-        console.log(formattedDate)
-        const newTimer = {
+        // req.session.user.arrayOfTimes wordt aangemaakt in app.post('signup', ...) rond regel 135
+        // adding foodname and the time to eat it to the timer array so we can check it client-side 
+        req.session.user.arrayOfTimes.push({
           foodName: req.body.name, 
           time: req.body.time,
-        }
-
-        req.session.user.arrayOfTimes.push(newTimer)
-
-          setInterval(function(){
-            console.log( 'stuff from setInterval' )
-            console.log(newTimer)
-            console.log( 'req.session.user.arrayOfTimes.length' )
-            console.log(req.session.user.arrayOfTimes.length)
-            console.log(newTimer.time)
-            console.log(newTimer.foodName)
-            console.log(formattedDate)
-            for(i = 0 ; i < req.session.user.arrayOfTimes.length; i++){
-              if(formattedDate === req.session.user.arrayOfTimes[i].time) {
-                 console.log('Its: ' + req.session.user.arrayOfTimes[i].time +' time for your ' + req.session.user.arrayOfTimes[i].foodName)
-              }//for
-            }
-        }, 60000)
-
-      //    //array ding
-        // res.render('profile', {user: user, food : food})
-      res.redirect('/profile') 
+        })
+        res.redirect('/profile') 
       })
     }
     else{
@@ -147,12 +127,13 @@ app.post('/login', (req,res)=> {
     db.User.findOne({
       where: {
       name: req.body.name
-      }
+    }
   }).then(function(user) {
+    //TO DO: get hashed password from the database and then do bcrypt compare
     bcrypt.compare(req.body.password, user.password, function(err, hash) {
       if(true) {
-        // req.session.user = user;
-        // req.session.user.arrayOfTimes= []
+        req.session.user = user;
+        req.session.user.arrayOfTimes= []
         // console.log('logging req.sessios.user.arrayOfTimes')
         // console.log(req.sessios.user.arrayOfTimes)
   
